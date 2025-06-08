@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #F8F8F8;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 393px;
+      height: 852px;
+      margin: auto;
+      position: relative;
+      background: #F8F8F8;
+      text-align: center;
+    }
+    .login-box {
+      width: 327px;
+      height: 556px;
+      margin: auto;
+      padding: 20px;
+      position: relative;
+      top: 100px;
+      background: white;
+      border-radius: 33px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 150px;
+      position: relative;
+      left: 10px; 
+    }
+    input, select {
+      width: 280px;
+      height: 50px;
+      margin: 10px 0;
+      background: #D9D9D9;
+      border-radius: 20px;
+      border: none;
+      padding: 0 22px;
+      font-size: 14px;
+    }
+    button {
+      width: 215px;
+      height: 68px;
+      background: #00B1A4;
+      border-radius: 35px;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .forgot-password {
+      display: block;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #00B1A4;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-box">
+      <img src="static/qrcodes/logo.png" alt="Logo" class="logo">
+      <h2>Login</h2>
+      <form action="{{ url_for('auth.login_post') }}" method="post">
+        <input type="text" name="userInput" placeholder="Enter your user ID" required>
+        <input type="password" name="passwordInput" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+        <!-- Forgot Password Link -->
+        <a href="{{ url_for('auth.forgot_password') }}" class="forgot-password">Forgot Password?</a>
+        {% if error_message %}
+          <p class="error-message">{{ error_message }}</p>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+</body>
+</html>

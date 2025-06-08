@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient QR Code</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .qr-container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .qr-container img {
+      max-width: 300px;
+      height: auto;
+    }
+    .back-link, .download-button {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--primary, #00b1a4);
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--primary, #00b1a4);
+      border-radius: 4px;
+    }
+    .back-link:hover, .download-button:hover {
+      background: var(--primary, #00b1a4);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="qr-container">
+    <h2>QR Code for Patient {{ patient_id }}</h2>
+    <img src="{{ url_for('static', filename=qr_filename) }}" alt="QR Code">
+    <br>
+    <!-- Download button -->
+    <a href="{{ url_for('static', filename=qr_filename) }}" download="patient_{{ patient_id }}_qr.png" class="download-button">
+      Download QR Code
+    </a>
+    <br>
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+  </div>
+</body>
+</html>

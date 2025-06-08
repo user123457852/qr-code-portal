@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Patient</title>
+  <style>
+    body {
+      background: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      width: 393px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    .title {
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00B1A4;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #008f8a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Add New Patient</div>
+    <form method="POST" action="{{ url_for('add_patient') }}">
+      <div class="form-group">
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required>
+      </div>
+      <div class="form-group">
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required>
+      </div>
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required>
+      </div>
+      <div class="form-group">
+        <label for="gender">sex:</label>
+        <input type="text" id="sex" name="sex" required>
+      </div>
+      <div class="form-group">
+        <label for="diagnosis">Diagnosis:</label>
+        <input type="text" id="diagnosis" name="diagnosis" required>
+      </div>
+      <div class="form-group">
+        <label for="medication">Medication:</label>
+        <input type="text" id="medication" name="medication" required>
+      </div>
+      <div class="form-group">
+        <label for="last_vital_bp">Last Vital BP:</label>
+        <input type="text" id="last_vital_bp" name="last_vital_bp" required>
+      </div>
+      <div class="form-group">
+        <label for="last_vital_hr">Last Vital HR:</label>
+        <input type="text" id="last_vital_hr" name="last_vital_hr" required>
+      </div>
+      <div class="form-group">
+        <label for="pain_level">Pain Level:</label>
+        <input type="text" id="pain_level" name="pain_level" required>
+      </div>
+      <div class="form-group">
+        <label for="functional_status">Functional Status:</label>
+        <input type="text" id="functional_status" name="functional_status" required>
+      </div>
+      <div class="form-group">
+        <label for="therapy_attendance">Therapy Attendance:</label>
+        <input type="text" id="therapy_attendance" name="therapy_attendance" required>
+      </div>
+      <div class="form-group">
+        <label for="exercise_adherence">Exercise Adherence:</label>
+        <input type="text" id="exercise_adherence" name="exercise_adherence" required>
+      </div>
+      <div class="form-group">
+        <label for="pro_score">PRO Score:</label>
+        <input type="number" id="pro_score" name="pro_score" required>
+      </div>
+      <div class="form-group">
+        <label for="fall_risk">Fall Risk:</label>
+        <input type="text" id="fall_risk" name="fall_risk" required>
+      </div>
+      <div class="form-group">
+        <label for="readmission_risk">Readmission Risk:</label>
+        <input type="text" id="readmission_risk" name="readmission_risk" required>
+      </div>
+      <div class="form-group">
+        <label for="cognitive_function">Cognitive Function:</label>
+        <input type="text" id="cognitive_function" name="cognitive_function" required>
+      </div>
+      <div class="form-group">
+        <label for="speech_clarity">Speech Clarity:</label>
+        <input type="text" id="speech_clarity" name="speech_clarity" required>
+      </div>
+      <div class="form-group">
+        <label for="mobility_score">Mobility Score:</label>
+        <input type="number" id="mobility_score" name="mobility_score" required>
+      </div>
+      <div class="form-group">
+        <label for="last_update">Last Update:</label>
+        <input type="date" id="last_update" name="last_update" required>
+      </div>
+      <div class="form-group">
+        <label for="progress_notes">Progress Notes:</label>
+        <input type="text" id="progress_notes" name="progress_notes" required>
+      </div>
+      <button type="submit">Create Patient</button>
+    </form>
+  </div>
+</body>
+</html>

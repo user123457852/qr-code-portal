@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Patient</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00B1A4;
+            --primary-dark: #009990;
+            --primary-light: #33c2b7;
+            --primary-lighter: rgba(0, 177, 164, 0.1);
+            --background: #f5f7fa;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --text-light: #666666;
+            --border: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --error: #e53935;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-bottom: 24px;
+            
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 24px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background-color: white;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 177, 164, 0.2);
+        }
+        
+        input[type="number"] {
+            -moz-appearance: textfield;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .button {
+            display: inline-block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 177, 164, 0.2);
+        }
+        
+        .button:active {
+            transform: translateY(0);
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .form-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .form-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-lighter);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+        
+        .form-title {
+            flex: 1;
+        }
+        
+        .form-title h2 {
+            color: var(--text);
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+        
+        .form-title p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .form-col {
+            flex: 1;
+        }
+        
+        .section-divider {
+            margin: 30px 0 20px;
+            border-top: 1px solid var(--border);
+            position: relative;
+        }
+        
+        .section-divider span {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 15px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .form-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .form-icon {
+                margin-right: 0;
+                margin-bottom: 16px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Create Patient</h1>
+        
+        <div class="card">
+            <div class="form-header">
+                <div class="form-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="form-title">
+                    <h2>Patient Information</h2>
+                    <p>Enter the details of the new patient</p>
+                </div>
+            </div>
+            
+            <form method="POST">
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" id="first_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" name="age" id="age" required min="0">
+                        </div>
+                    </div>
+                    
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="sex">Sex</label>
+                            <select name="sex" id="sex" required>
+                                <option value="" disabled selected>Select sex</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender">
+                        <option value="" disabled selected>Select gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Non-binary">Non-binary</option>
+                        <option value="Prefer not to say">Prefer not to say</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" placeholder="patient@example.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" placeholder="(+351) 123456789">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-divider">
+                    <span>Assignment</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="assigned_clinician">Assign to Clinician</label>
+                    <select name="assigned_clinician" id="assigned_clinician" required>
+                        <option value="" disabled selected>Select a clinician</option>
+                        {% for clinician in clinicians %}
+                        <option value="{{ clinician.clinician_id }}">{{ clinician.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="button">Create Patient</button>
+            </form>
+        </div>
+        
+        <a href="{{ url_for('admin.admin_dashboard') }}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

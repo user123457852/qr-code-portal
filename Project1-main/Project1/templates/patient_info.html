@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00b1a4;
+      --primary-dark: #00b1a4;
+      --primary-light: #e6f7f6;
+      --secondary: #f8f9fa;
+      --text-dark: #333;
+      --text-light: #fff;
+      --border-radius: 12px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f2f5;
+      color: var(--text-dark);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 280px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 2rem 1rem;
+      height: 100vh;
+      color: var(--text-light);
+      position: fixed;
+      z-index: 10;
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-container { 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      margin-bottom: 20px; 
+    }
+    .logo { max-width: 180px; height: auto; filter: brightness(0) invert(1); }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li {
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+    }
+    .sidebar ul li i { margin-right: 10px; width: 20px; text-align: center; }
+    .sidebar ul li:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
+    .sidebar ul li.active {
+      background: var(--text-light);
+      color: var(--primary);
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar-buttons {
+      margin-top: auto;
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .delete-button {
+      background: #dc3545;
+      color: var(--text-light);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      width: 100%;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+    .delete-button:hover { background: #c82333; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
+    .delete-button:active { transform: translateY(0); }
+    .container {
+      margin-left: 280px;
+      width: calc(100% - 280px);
+      padding: 2rem;
+      transition: var(--transition);
+      position: relative;
+    }
+    .card {
+      background: var(--text-light);
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+      box-shadow: var(--box-shadow);
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .card.active { display: block; }
+    .card h3 {
+      margin: 0 0 1.5rem 0;
+      color: var(--primary);
+      font-size: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    .editable { margin-bottom: 1.2rem; }
+    .editable span { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-dark); }
+    .editable input, 
+    .editable select, 
+    .editable textarea {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: #f9f9f9;
+      pointer-events: none;
+    }
+    .editable input:focus, 
+    .editable select:focus, 
+    .editable textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+    .editable textarea {
+      min-height: 40px;
+      resize: none;
+      overflow: hidden;
+      line-height: 1.5;
+    }
+    .edit-mode .editable input,
+    .edit-mode .editable select,
+    .edit-mode .editable textarea {
+      background-color: white;
+      pointer-events: auto;
+    }
+    .edit-button {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 0.8rem 1.5rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      width: auto;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      box-shadow: var(--box-shadow);
+    }
+    .edit-button:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
+    .edit-button:active { transform: translateY(0); }
+    .toggle-edit-button {
+      background: var(--primary);
+      color: var(--text-light);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: var(--box-shadow);
+      z-index: 5;
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+    }
+    .toggle-edit-button:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); }
+    .toggle-edit-button:active { transform: translateY(0); }
+    .mobile-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--primary);
+      color: var(--text-light);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 20;
+      box-shadow: var(--box-shadow);
+    }
+    @media (max-width: 992px) {
+      .sidebar { width: 240px; }
+      .container { margin-left: 240px; width: calc(100% - 240px); }
+    }
+    @media (max-width: 768px) {
+      .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+      .sidebar { transform: translateX(-100%); width: 280px; }
+      .sidebar.active { transform: translateX(0); }
+      .container { margin-left: 0; width: 100%; padding: 1rem; }
+      .card { padding: 1.5rem; }
+      .toggle-edit-button { 
+        top: 1rem; 
+        right: 5rem;
+      }
+    }
+    @media (max-width: 480px) {
+      .sidebar { width: 100%; }
+      .card { padding: 1rem; }
+      .editable input, .editable select, .editable textarea { padding: 0.7rem; }
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 5;
+    }
+    .overlay.active { display: block; }
+    .success-toast {
+      position: fixed;
+      top: 20px; right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      transform: translateY(-100px);
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    .success-toast.show { transform: translateY(0); opacity: 1; }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--box-shadow);
+    }
+    .modal-content h4 { margin-bottom: 1rem; color: var(--text-dark); }
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .modal-buttons button {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .cancel-button {
+      background: #f8f9fa;
+      border: 1px solid #ddd;
+      color: var(--text-dark);
+    }
+    .cancel-button:hover { background: #e9ecef; }
+    .submit-button {
+      background: var(--primary);
+      border: none;
+      color: var(--text-light);
+    }
+    .submit-button:hover { background: var(--primary-dark); }
+    .save-button-container {
+      text-align: center;
+      display: none;
+    }
+    .edit-mode .save-button-container {
+      display: block;
+    }
+    .summary-section {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.2rem 0;
+    }
+    .summary-section h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    .summary-section h4 i {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <button class="mobile-toggle" id="mobile-toggle">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="overlay" id="overlay"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="logo-container">
+      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Braining_site-1-E8uQzDg0qtl7soR5ftlYaeGwsQDNmd.png" alt="Braining Logo" class="logo">
+    </div>
+    <ul>
+      <li onclick="showSection('info')" id="info-btn" class="active">
+        <i class="fas fa-user"></i> Patient Information
+      </li>
+      <li onclick="showSection('diagnosis')" id="diagnosis-btn">
+        <i class="fas fa-stethoscope"></i> Diagnosis & Symptoms
+      </li>
+      <li onclick="showSection('lab')" id="lab-btn">
+        <i class="fas fa-flask"></i> Lab Values
+      </li>
+      <li onclick="showSection('medication')" id="medication-btn">
+        <i class="fas fa-pills"></i> Medication
+      </li>
+      <li onclick="showSection('therapies')" id="therapies-btn">
+        <i class="fas fa-hand-holding-medical"></i> Therapies
+      </li>
+    </ul>
+    <div class="sidebar-buttons">
+      <button class="delete-button" onclick="showDeleteModal()">
+        <i class="fas fa-trash"></i> Delete Patient
+      </button>
+    </div>
+  </div>
+  <div class="container">
+    <button class="toggle-edit-button" id="toggle-edit-button" onclick="toggleEditMode()">
+      <i class="fas fa-edit"></i> Edit
+    </button>
+    {% set patient = patients[0] %}
+    <div id="info" class="card active">
+      <h3><i class="fas fa-user"></i> Patient Information</h3>
+      <div class="editable">
+        <span>Name</span>
+        <input type="text" id="patient_name" value="{{ patient.first_name }} {{ patient.last_name }}">
+      </div>
+      <div class="editable">
+        <span>Age</span>
+        <input type="text" id="patient_age" value="{{ patient.age }}">
+      </div>
+      <div class="editable">
+        <span>Sex</span>
+        <select id="patient_sex">
+          <option value="Male" {% if patient.sex == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if patient.sex == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+      </div>
+      <div class="editable">
+        <span>Gender</span>
+        <select id="patient_gender">
+          <option value="Male" {% if patient.gender == 'Male' %}selected{% endif %}>Male</option>
+          <option value="Female" {% if patient.gender == 'Female' %}selected{% endif %}>Female</option>
+          <option value="Non-binary" {% if patient.gender == 'Non-binary' %}selected{% endif %}>Non-binary</option>
+          <option value="Prefer not to say" {% if patient.gender == 'Prefer not to say' %}selected{% endif %}>Prefer not to say</option>
+          <option value="Other" {% if patient.gender == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="editable">
+        <span>Email</span>
+        <input type="email" id="patient_email" value="{{ patient.email }}">
+      </div>
+      <div class="editable">
+        <span>Phone Number</span>
+        <input type="tel" id="patient_phone" value="{{ patient.phone_number }}">
+      </div>
+      
+      <!-- Summary section moved to patient info -->
+      <div class="summary-section">
+        <h4><i class="fas fa-file-alt"></i> Patient Summary</h4>
+        <p>{{ llm_summary }}</p>
+      </div>
+    </div>
+    <div id="diagnosis" class="card">
+      <h3><i class="fas fa-stethoscope"></i> Diagnosis & Symptoms</h3>
+      <div class="editable">
+        <span>Disease</span>
+        <input type="text" id="diseas_disorder" value="{{ patient.disease }}">
+      </div>
+      <div class="editable">
+        <span>Severity</span>
+        <select id="severity">
+          <option value="Mild" {% if patient.severity == 'Mild' %}selected{% endif %}>Mild</option>
+          <option value="Moderate" {% if patient.severity == 'Moderate' %}selected{% endif %}>Moderate</option>
+          <option value="Severe" {% if patient.severity == 'Severe' %}selected{% endif %}>Severe</option>
+        </select>
+      </div>
+      <div class="editable">
+        <span>Observations & Symptoms</span>
+        <textarea id="sign_symptom" class="auto-resize">{{ patient.symptoms }}</textarea>
+      </div>
+      <div class="editable">
+        <span>Diagnostic Procedure</span>
+        <textarea id="diagnostic_procedure" class="auto-resize">{{ patient.diagnostic_procedure }}</textarea>
+      </div>
+    </div>
+    <div id="lab" class="card">
+      <h3><i class="fas fa-flask"></i> Lab Values</h3>
+      <div class="editable">
+        <span>Vital Health Metrics</span>
+        <textarea id="lab_value" class="auto-resize">{{ patient.lab_values }}</textarea>
+      </div>
+    </div>
+    <div id="medication" class="card">
+      <h3><i class="fas fa-pills"></i> Medication</h3>
+      <div class="editable">
+        <span>Prescriptions</span>
+        <input type="text" id="medication_name" value="{{ patient.prescriptions }}">
+      </div>
+      <div class="editable">
+        <span>Dosage</span>
+        <input type="text" id="dosage" value="{{ patient.dosage }}">
+      </div>
+    </div>
+    <div id="therapies" class="card">
+      <h3><i class="fas fa-hand-holding-medical"></i> Recommended Therapies</h3>
+      <div class="editable">
+        <span>Therapeutic Procedure</span>
+        <textarea id="therapeutic_procedure" class="auto-resize">{{ patient.therapeutic_procedure }}</textarea>
+      </div>
+      <div class="editable">
+        <span>Description</span>
+        <textarea id="procedure_description" class="auto-resize">{{ patient.therapy_description }}</textarea>
+      </div>
+      <div class="editable">
+        <span>Body Part</span>
+        <textarea id="biological_structure" class="auto-resize">{{ patient.body_parts }}</textarea>
+      </div>
+    </div>
+    <div class="save-button-container">
+      <button class="edit-button" onclick="saveChanges()">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+    </div>
+  </div>
+  <div class="modal" id="delete-modal">
+    <div class="modal-content">
+      <h4>Delete Patient</h4>
+      <p>Why do you want to delete this patient?</p>
+      <div class="editable">
+        <textarea id="delete-reason" class="auto-resize" placeholder="Please provide a reason..."></textarea>
+      </div>
+      <div class="modal-buttons">
+        <button class="cancel-button" onclick="closeDeleteModal()">Cancel</button>
+        <button class="submit-button" onclick="deletePatient()">Submit</button>
+      </div>
+    </div>
+  </div>
+  <div class="success-toast" id="success-toast">
+    Changes saved successfully!
+  </div>
+  <script>
+    function showSection(id) {
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => card.classList.remove('active'));
+      const buttons = document.querySelectorAll('.sidebar ul li');
+      buttons.forEach(button => button.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById(id + '-btn').classList.add('active');
+      if (window.innerWidth <= 768) { toggleSidebar(); }
+    }
+    
+    function toggleEditMode() {
+      const container = document.querySelector('.container');
+      container.classList.toggle('edit-mode');
+      
+      const editButton = document.getElementById('toggle-edit-button');
+      if (container.classList.contains('edit-mode')) {
+        editButton.innerHTML = '<i class="fas fa-times"></i> Cancel';
+      } else {
+        editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+      }
+    }
+    
+    function saveChanges() {
+      const patientData = {
+        first_name: document.getElementById('patient_name').value.split(' ')[0],
+        last_name: document.getElementById('patient_name').value.split(' ')[1],
+        age: document.getElementById('patient_age').value,
+        sex: document.getElementById('patient_sex').value,
+        gender: document.getElementById('patient_gender').value,
+        email: document.getElementById('patient_email').value,
+        phone_number: document.getElementById('patient_phone').value,
+        disease: document.getElementById('diseas_disorder').value,
+        severity: document.getElementById('severity').value,
+        symptoms: document.getElementById('sign_symptom').value,
+        diagnostic_procedure: document.getElementById('diagnostic_procedure').value,
+        lab_values: document.getElementById('lab_value').value,
+        prescriptions: document.getElementById('medication_name').value,
+        dosage: document.getElementById('dosage').value,
+        therapeutic_procedure: document.getElementById('therapeutic_procedure').value,
+        therapy_description: document.getElementById('procedure_description').value,
+        body_parts: document.getElementById('biological_structure').value
+      };
+      const patientId = "{{ patient.patient_id }}";
+      
+      // Show success message immediately
+      const toast = document.getElementById('success-toast');
+      toast.textContent = 'Patient updated successfully!';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+      
+      // Exit edit mode
+      toggleEditMode();
+      
+      // Send the data to the server in the background
+      fetch("{{ url_for('patient.update_patient_route', patient_id=patient.patient_id) }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patientData)
+      })
+      .then(response => response.json())
+      .catch(error => {
+        console.error('Error:', error);
+        // We don't show any error message to the user as requested
+      });
+    }
+    
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('overlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    }
+    
+    function autoResizeTextareas() {
+      const textareas = document.querySelectorAll('textarea.auto-resize');
+      textareas.forEach(textarea => {
+        adjustHeight(textarea);
+        textarea.addEventListener('input', function() { adjustHeight(this); });
+      });
+    }
+    
+    function adjustHeight(element) {
+      element.style.height = 'auto';
+      element.style.height = element.scrollHeight + 'px';
+    }
+    
+    document.getElementById('mobile-toggle').addEventListener('click', toggleSidebar);
+    document.getElementById('overlay').addEventListener('click', toggleSidebar);
+    document.addEventListener('DOMContentLoaded', function() { 
+      showSection('info'); 
+      autoResizeTextareas(); 
+      
+      // Make delete modal textarea always editable
+      const deleteReason = document.getElementById('delete-reason');
+      if (deleteReason) {
+        deleteReason.style.pointerEvents = 'auto';
+        deleteReason.style.backgroundColor = 'white';
+      }
+    });
+    
+    window.addEventListener('resize', function() {
+      if (window.innerWidth > 768) {
+        document.getElementById('sidebar').classList.remove('active');
+        document.getElementById('overlay').classList.remove('active');
+      }
+      document.querySelectorAll('textarea.auto-resize').forEach(textarea => { adjustHeight(textarea); });
+    });
+    
+    function showDeleteModal() {
+      const modal = document.getElementById('delete-modal');
+      modal.classList.add('active');
+      const textarea = document.getElementById('delete-reason');
+      textarea.value = '';
+      textarea.focus();
+      adjustHeight(textarea);
+    }
+    
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.remove('active');
+    }
+    
+    function deletePatient() {
+  const reason = document.getElementById('delete-reason').value.trim();
+  const patientId = "{{ patient.patient_id }}";
+  if (!reason) {
+      alert("Please provide a reason for deletion.");
+      return;
+  }
+  fetch("{{ url_for('patient.request_delete_patient', patient_id=patient.patient_id) }}", {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason: reason })
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          alert("Deletion request submitted successfully!");
+          // Optionally, hide the modal or refresh the patient info page:
+          closeDeleteModal();
+      } else {
+          alert("Error submitting deletion request: " + data.error);
+      }
+  })
+  .catch(error => console.error('Error:', error));
+}
+  </script>
+</body>
+</html>

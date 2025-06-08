@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00B1A4;
+      --primary-dark: #009990;
+      --primary-light: #33c2b7;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #f2f2f2;
+      --border: #e0e0e0;
+      --text: #333;
+      --text-light: #666;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      color: var(--text);
+      background-color: #f9f9f9;
+    }
+    
+    .sidebar {
+      width: 250px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 20px;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      z-index: 10;
+      height: 100vh;
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    
+    .logo {
+      max-width: 180px;
+      height: auto;
+      filter: brightness(0) invert(1);
+    }
+    
+    .sidebar h3 {
+      color: white;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 20px;
+      margin-left: 250px;
+      overflow-y: auto;
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .action-buttons a {
+      text-decoration: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      display: block;
+      text-align: center;
+      transition: var(--transition);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .action-buttons a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    .search-bar {
+      width: 100%;
+      padding: 12px 15px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .search-bar:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 177, 164, 0.2);
+    }
+    
+    #suggestions {
+      border: 1px solid var(--border);
+      background: #fff;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    
+    #suggestions h4 {
+      margin: 0;
+      padding: 15px;
+      background-color: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+    
+    #suggestions ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    #suggestions li {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--gray);
+      transition: var(--transition);
+    }
+    
+    #suggestions li:hover {
+      background-color: rgba(0, 177, 164, 0.1);
+    }
+    
+    #suggestions a {
+      text-decoration: none;
+      color: var(--text);
+      cursor: pointer;
+      display: block;
+    }
+    
+    .content h3 {
+      margin-bottom: 20px;
+      color: var(--primary);
+      font-size: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: var(--shadow);
+    }
+    
+    .card h4 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: var(--primary);
+    }
+    
+    .card p {
+      margin-bottom: 10px;
+      color: var(--text-light);
+    }
+    
+    .card .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .card .actions a {
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      display: inline-block;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .card .actions .approve {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .card .actions .approve:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .card .actions .disapprove {
+      background: #f8f9fa;
+      color: #dc3545;
+      border: 1px solid #dc3545;
+    }
+    
+    .card .actions .disapprove:hover {
+      background: #dc3545;
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    /* New QR Code Button */
+    .card .actions .view-qr {
+      background: #6c757d;
+      color: white;
+      border: none;
+    }
+    
+    .card .actions .view-qr:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+    }
+    
+    .menu-toggle {
+      display: none;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      cursor: pointer;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    
+    .reason-box {
+      background-color: #f8f9fa;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0 15px 0;
+    }
+    
+    .reason-box h5 {
+      color: var(--primary-dark);
+      margin-top: 0;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .reason-box p {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .sidebar {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        height: 100%;
+        transition: left 0.3s ease;
+      }
+      
+      .sidebar.active {
+        left: 0;
+      }
+      
+      .content {
+        margin-left: 0;
+        margin-top: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+  
+  <div class="sidebar" id="sidebar">
+    <div class="logo-container">
+      <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Braining_site-1-E8uQzDg0qtl7soR5ftlYaeGwsQDNmd.png" alt="Braining Logo" class="logo">
+    </div>
+    <h3><i class="fas fa-user-shield"></i> Admin Dashboard</h3>
+    <div class="action-buttons">
+      <a href="{{ url_for('admin.create_clinician') }}"><i class="fas fa-user-md"></i> Create Clinician</a>
+      <a href="{{ url_for('patient.create_basic_patient') }}"><i class="fas fa-user-plus"></i> Create Patient</a>
+    </div>
+  </div>
+  
+  <div class="content">
+    <!-- Search Bar -->
+    <input type="text" id="globalSearch" class="search-bar" placeholder="Search Clinicians and Patients..." onkeyup="searchAll()">
+    
+    <!-- Suggestions Container -->
+    <div id="suggestions"></div>
+    
+    <!-- Pending Deletion Requests Section -->
+    <h3><i class="fas fa-trash-alt"></i> Pending Deletion Requests</h3>
+    {% if delete_requests %}
+      {% for req in delete_requests %}
+      <div class="card">
+        <h4>Request ID: {{ req.request_id }}</h4>
+        <p><strong>Patient:</strong> [{{ req.patient_id }}] {{ req.patient_name }}</p>
+        <p><strong>Requested by Medic:</strong> [{{ req.medic_id }}] {{ req.medic_name }}</p>
+        
+        <!-- Deletion Reason/Explanation -->
+        <div class="reason-box">
+          <h5><i class="fas fa-info-circle"></i> Reason for Deletion Request:</h5>
+          <p>{{ req.deletion_reason }}</p>
+        </div>
+        
+        <div class="actions">
+          <a class="approve" href="{{ url_for('admin.process_delete_request', request_id=req.request_id, action='approve') }}">Approve</a>
+          <a class="disapprove" href="{{ url_for('admin.process_delete_request', request_id=req.request_id, action='disapprove') }}">Disapprove</a>
+          <!-- New Button: View QR Code -->
+          <a class="view-qr" href="{{ url_for('admin.patient_qr', patient_id=req.patient_id) }}">View QR Code</a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p>No pending deletion requests.</p>
+    {% endif %}
+  </div>
+  
+  <!-- Embed JSON data in separate script tags -->
+  <script id="clinicians-data" type="application/json">
+    {{ clinicians | tojson | safe }}
+  </script>
+  <script id="patients-data" type="application/json">
+    {{ patients | tojson | safe }}
+  </script>
+  
+  <script>
+    // Parse JSON data from the script tags.
+    var clinicians = JSON.parse(document.getElementById('clinicians-data').textContent);
+    var patients = JSON.parse(document.getElementById('patients-data').textContent);
+
+    // Map patients to include full names.
+    patients = patients.map(function(patient) {
+      return { id: patient.patient_id, name: patient.first_name + " " + patient.last_name };
+    });
+    clinicians = clinicians.map(function(clinician) {
+      return { id: clinician.clinician_id, name: clinician.name };
+    });
+
+    function searchAll() {
+      var input = document.getElementById("globalSearch").value.trim().toUpperCase();
+      var suggestionsDiv = document.getElementById("suggestions");
+      suggestionsDiv.innerHTML = ""; // clear previous suggestions
+
+      if (input === "") return;
+
+      // Filter arrays based on matching text.
+      var matchingClinicians = clinicians.filter(function(item) {
+        return item.name.toUpperCase().indexOf(input) > -1;
+      });
+      var matchingPatients = patients.filter(function(item) {
+        return item.name.toUpperCase().indexOf(input) > -1;
+      });
+
+      // Create suggestions section for Clinicians.
+      if (matchingClinicians.length > 0) {
+        var cliniciansSection = document.createElement("div");
+        var clinicianHeading = document.createElement("h4");
+        clinicianHeading.textContent = "Clinicians";
+        cliniciansSection.appendChild(clinicianHeading);
+        var ulClinicians = document.createElement("ul");
+        matchingClinicians.forEach(function(item) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = "/admin/clinician/" + item.id;
+          a.textContent = item.name;
+          li.appendChild(a);
+          ulClinicians.appendChild(li);
+        });
+        cliniciansSection.appendChild(ulClinicians);
+        suggestionsDiv.appendChild(cliniciansSection);
+      }
+
+      // Create suggestions section for Patients.
+      if (matchingPatients.length > 0) {
+        var patientsSection = document.createElement("div");
+        var patientHeading = document.createElement("h4");
+        patientHeading.textContent = "Patients";
+        patientsSection.appendChild(patientHeading);
+        var ulPatients = document.createElement("ul");
+        matchingPatients.forEach(function(item) {
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = "/admin/patient_qr/" + item.id;  // Link to view QR code for patient.
+          a.textContent = item.name;
+          li.appendChild(a);
+          ulPatients.appendChild(li);
+        });
+        patientsSection.appendChild(ulPatients);
+        suggestionsDiv.appendChild(patientsSection);
+      }
+    }
+
+    // Toggle sidebar for mobile view
+    function toggleSidebar() {
+      var sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("active");
+    }
+  </script>
+</body>
+</html>

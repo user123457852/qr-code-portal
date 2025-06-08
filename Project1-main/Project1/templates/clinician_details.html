@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinician Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00B1A4;
+      --primary-dark: #009990;
+      --primary-light: #33c2b7;
+      --primary-lighter: rgba(0, 177, 164, 0.1);
+      --danger: #e53935;
+      --danger-dark: #c62828;
+      --success: #2e7d32;
+      --success-dark: #1b5e20;
+      --background: #f5f7fa;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --text-light: #666666;
+      --border: #e0e0e0;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+      --border-radius: 12px;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 20px;
+      transition: var(--transition);
+      padding: 8px 16px;
+      border-radius: 30px;
+      background-color: rgba(0, 177, 164, 0.1);
+    }
+    
+    .back-link:hover {
+      color: var(--primary-dark);
+      background-color: rgba(0, 177, 164, 0.2);
+      transform: translateX(-5px);
+    }
+    
+    .back-link i {
+      margin-right: 8px;
+    }
+    
+    .page-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    
+    .clinician-avatar {
+      width: 80px;
+      height: 80px;
+      background-color: var(--primary-lighter);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 20px;
+      flex-shrink: 0;
+    }
+    
+    .clinician-avatar i {
+      font-size: 32px;
+      color: var(--primary);
+    }
+    
+    .clinician-info {
+      flex: 1;
+    }
+    
+    .clinician-info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    
+    .clinician-info .email {
+      display: flex;
+      align-items: center;
+      color: var(--text-light);
+    }
+    
+    .clinician-info .email i {
+      margin-right: 8px;
+      color: var(--primary);
+    }
+    
+    .delete-action {
+      margin-left: 20px;
+    }
+    
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      transition: var(--transition);
+      animation: fadeIn 0.5s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .card-header .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: var(--primary-lighter);
+      color: var(--primary);
+      border-radius: 50%;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+    
+    .card-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .patient-list {
+      list-style-type: none;
+      padding: 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      flex: 1;
+    }
+    
+    .patient-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+      background-color: var(--card-bg);
+    }
+    
+    .patient-item:last-child {
+      border-bottom: none;
+    }
+    
+    .patient-item:hover {
+      background-color: var(--primary-lighter);
+    }
+    
+    .patient-name {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+    
+    .patient-name i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .button i {
+      margin-right: 6px;
+    }
+    
+    .button-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .button-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .button-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+    
+    .button-danger:hover {
+      background-color: var(--danger-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .button-success {
+      background-color: var(--success);
+      color: white;
+    }
+    
+    .button-success:hover {
+      background-color: var(--success-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .button-large {
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+    
+    .assign-form {
+      margin-top: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+      flex: 1;
+    }
+    
+    select {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: white;
+      transition: var(--transition);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2300B1A4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 177, 164, 0.2);
+    }
+    
+    .empty-state {
+      padding: 30px 16px;
+      text-align: center;
+      color: var(--text-light);
+      font-style: italic;
+      background-color: rgba(0, 0, 0, 0.02);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    .empty-state i {
+      font-size: 2.5rem;
+      color: var(--text-light);
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      width: 90%;
+      max-width: 500px;
+      padding: 24px;
+      animation: modalFadeIn 0.3s ease;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .modal-header i {
+      color: var(--danger);
+      font-size: 24px;
+      margin-right: 12px;
+    }
+    
+    .modal-header h3 {
+      color: var(--danger);
+      margin: 0;
+    }
+    
+    .modal-body {
+      margin-bottom: 24px;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="{{ url_for('admin.admin_dashboard') }}" class="back-link">
+      <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+    
+    <div class="page-header">
+      <div class="clinician-avatar">
+        <i class="fas fa-user-md"></i>
+      </div>
+      <div class="clinician-info">
+        <h1>{{ clinician.name }}</h1>
+        <div class="email">
+          <i class="fas fa-envelope"></i>
+          <span>{{ clinician.email }}</span>
+        </div>
+      </div>
+      <div class="delete-action">
+        <button class="button button-danger button-large" onclick="openDeleteModal()">
+          <i class="fas fa-trash-alt"></i> Delete Clinician
+        </button>
+      </div>
+    </div>
+    
+    <div class="grid-layout">
+      <div class="card">
+        <div class="card-header">
+          <div class="icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h2>Patients Assigned</h2>
+        </div>
+        <div class="card-content">
+          {% if patients %}
+            <ul class="patient-list">
+              {% for patient in patients %}
+                <li class="patient-item">
+                  <span class="patient-name">
+                    <i class="fas fa-user"></i>
+                    {{ patient.first_name }} {{ patient.last_name }}
+                  </span>
+                  <div class="patient-actions">
+                    <form action="{{ url_for('admin.remove_patient', clinician_id=clinician.clinician_id, patient_id=patient.patient_id) }}" method="POST" style="display: inline;">
+                      <button type="submit" class="button button-danger">
+                        <i class="fas fa-user-minus"></i> Remove
+                      </button>
+                    </form>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <div class="empty-state">
+              <i class="fas fa-user-slash"></i>
+              <p>No patients found for this clinician.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="icon">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <h2>Assign a Patient</h2>
+        </div>
+        <div class="card-content">
+          {% if unassigned_patients %}
+          <form action="{{ url_for('admin.assign_patient', clinician_id=clinician.clinician_id) }}" method="POST" class="assign-form">
+              <div class="form-group">
+                <select name="patient_id">
+                  {% for patient in unassigned_patients %}
+                    <option value="{{ patient.patient_id }}">{{ patient.first_name }} {{ patient.last_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" class="button button-primary">
+                <i class="fas fa-plus-circle"></i> Assign Patient
+              </button>
+            </form>
+          {% else %}
+            <div class="empty-state">
+              <i class="fas fa-clipboard-check"></i>
+              <p>No unassigned patients available.</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Delete Confirmation Modal with Reason Input -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fas fa-exclamation-triangle"></i>
+        <h3>Confirm Deletion</h3>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ clinician.name }}</strong>?</p>
+        <p>This action cannot be undone. Please provide a reason for deletion:</p>
+        <div class="editable">
+          <textarea id="delete-reason" style="width:100%; padding:8px; border:1px solid var(--border); border-radius:6px;" placeholder="Enter deletion reason..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="button" onclick="closeDeleteModal()">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+        <button class="button button-danger" onclick="deleteClinician()">
+          <i class="fas fa-trash-alt"></i> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const clinicianId = "{{ clinician.clinician_id }}";
+    
+    function openDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+    
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+    }
+    
+    function deleteClinician() {
+      const reason = document.getElementById('delete-reason').value;
+      fetch("{{ url_for('admin.delete_clinician', clinician_id=clinician.clinician_id) }}", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reason: reason })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        window.location.href = "{{ url_for('admin.admin_dashboard') }}";
+      })
+      .catch(error => console.error('Error:', error));
+    }
+    
+    window.onclick = function(event) {
+      const modal = document.getElementById('deleteModal');
+      if (event.target === modal) {
+        closeDeleteModal();
+      }
+    }
+  </script>
+</body>
+</html>

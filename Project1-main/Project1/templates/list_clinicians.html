@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinician List</title>
+</head>
+<body>
+    <h1>Clinicians</h1>
+    
+    {% if clinicians %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Clinician ID</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for clinician in clinicians %}
+                    <tr>
+                        <td>{{ clinician.clinician_id }}</td>
+                        <td>{{ clinician.name }}</td>
+                        <td>
+                            <a href="{{ url_for('delete_clinician', clinician_id=clinician.clinician_id) }}">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No clinicians found.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a>
+</body>
+</html>
